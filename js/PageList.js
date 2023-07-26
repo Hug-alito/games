@@ -35,6 +35,7 @@ const PageList = (argument = '') => {
       filteredArticles.sort((a, b) => new Date(b.released) - new Date(a.released));
       const resultsContent = articles.slice(0, end).map((article) => {
         const platforms = article.platforms.map((platform) => platform.platform.name).join(', ');
+        const releaseDate = new Date(article.released).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         return (
           `<article class="carte card game-card col-4 rounded">
           <div class="card-content card-body">
@@ -43,11 +44,11 @@ const PageList = (argument = '') => {
             <p class="text-white">Plateformes: ${platforms}</p>
           </div>
           <div class="card-hover-content" style="display:none;">
-            <h2 class="mt-2">Date de sortie: ${article.released}</h2>
-            <p>Éditeur: ${article.publisher || 'N/A'}</p>
-            <p>Genres: ${article.genres.map(genre => genre.name).join(', ') || 'N/A'}</p>
-            <p>Note: ${article.rating || 'N/A'}</p>
-            <p>Nombre de votes: ${article.ratings_count || 0}</p>
+            <h2 class="mt-2 text-white">${releaseDate}</h2>
+            <p class="text-white">Éditeur: ${article.publisher || 'N/A'}</p>
+            <p class="text-white">Genres: ${article.genres.map(genre => genre.name).join(', ') || 'N/A'}</p>
+            <p class="text-white">Note: ${article.rating || 'N/A'}</p>
+            <p class="text-white">Nombre de votes: ${article.ratings_count || 0}</p>
             <a href="#pagedetail/${article.id}">En savoir plus</a>
           </div>
         </article>`
@@ -60,7 +61,7 @@ const PageList = (argument = '') => {
       addCardEventListeners();
 
       if (end < articles.length) {
-        showMoreButton.style.display = 'block';
+        showMoreButton.style.display = 'flex';
       } else {
         showMoreButton.style.display = 'none';
       }
@@ -101,10 +102,12 @@ const PageList = (argument = '') => {
   const render = () => {
     const pageContent = document.getElementById('pageContent');
     pageContent.innerHTML = `
-      <section class="page-list">
-        <div class="articles row justify-content-center justify-items-center">Loading...</div>
-        <div class="see-more"><button type="button" id="showMore" class="btn btn-primary" style="display:none">Show More</button></div>
-      </section>
+    <section class="page-list row">
+      <div class="articles row justify-content-center justify-items-center">Loading...</div>
+      <div class="see-more d-flex justify-content-center">
+        <button type="button" id="showMore" class="btn-danger" style="display:none">Show more</button>
+      </div>
+    </section>  
     `;
 
     const presentation = document.getElementById('presentation');
@@ -119,7 +122,7 @@ const PageList = (argument = '') => {
     platformsSearch.innerHTML = `
     <div class="filter-container">
       <select class="filtre" id="platformFilter">
-        <option value="">Platform: any</option>
+        <option value="">Platform: any ⭥</option>
         <option value="PC">Platform: PC</option>
         <option value="PlayStation">Platform: PlayStation</option>
         <option value="Xbox">Platform: Xbox</option>

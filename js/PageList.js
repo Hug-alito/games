@@ -27,15 +27,20 @@ const PageList = (argument = '') => {
     };
 
     const displayResults = (articles) => {
-      articles.sort((a, b) => new Date(b.released) - new Date(a.released));
+      const selectedPlatform = document.getElementById('platformFilter').value;
+      const filteredArticles = selectedPlatform
+        ? articles.filter(article => article.platforms.some(platform => platform.platform.name === selectedPlatform))
+        : articles;
+    
+      filteredArticles.sort((a, b) => new Date(b.released) - new Date(a.released));
       const resultsContent = articles.slice(0, end).map((article) => {
         const platforms = article.platforms.map((platform) => platform.platform.name).join(', ');
         return (
-          `<article class="card game-card col-3 m-3 rounded">
+          `<article class="carte card game-card col-4 rounded">
           <div class="card-content card-body">
-            <h3 class="mt-2 card-title"><strong>${article.name}</strong></h3>
-            <p>Plateformes: ${platforms}</p>
             <img class="card-img" src="${article.background_image}" alt="${article.name}" style="height: 300px; object-fit: cover;">
+            <h3 class="mt-2 card-title text-white"><strong>${article.name}</strong></h3>
+            <p class="text-white">Plateformes: ${platforms}</p>
           </div>
           <div class="card-hover-content" style="display:none;">
             <h2 class="mt-2">Date de sortie: ${article.released}</h2>
@@ -69,6 +74,11 @@ const PageList = (argument = '') => {
           displayResults(responseData.results);
         });
     };
+    
+    const platformFilter = document.getElementById('platformFilter');
+    platformFilter.addEventListener('change', () => {
+      fetchList(url, cleanedArgument); 
+    });    
 
     fetchList(url, cleanedArgument);
 
@@ -101,11 +111,22 @@ const PageList = (argument = '') => {
     presentation.innerHTML = `
     <div class="welcome">
       <h2 class="subtitle mb-4">Welcome,</h2>
-      <p class="text">The Hyper Progame is the world’s premier event for computer and video games and related products. At The Hyper Progame,<br>
-        the video game industry’s top talent pack the Los Angeles Convention Center, connecting tens of thousands of the best,<br>
-        brightest, and most innovative in the interactive entertainment industry. For three exciting days, leading-edge companies,<br>
-        groundbreaking new technologies, and never-before-seen products will be showcased. The Hyper Progame connects you<br>
-        with both new and existing partners, industry executives, gamers, and social influencers providing unprecedented exposure</p>
+      <p class="text">The Hyper Progame is the world’s premier event for computer and video games and related products. At The Hyper Progame, the video game industry’s top talent pack the Los Angeles Convention Center, connecting tens of thousands of the best, brightest, and most innovative in the interactive entertainment industry. For three exciting days, leading-edge companies, groundbreaking new technologies, and never-before-seen products will be showcased. The Hyper Progame connects you with both new and existing partners, industry executives, gamers, and social influencers providing unprecedented exposure</p>
+    </div>
+    `;
+
+    const platformsSearch = document.getElementById('platformsSearch');
+    platformsSearch.innerHTML = `
+    <div class="filter-container">
+      <select class="filtre" id="platformFilter">
+        <option value="">Platform: any</option>
+        <option value="PC">Platform: PC</option>
+        <option value="PlayStation">Platform: PlayStation</option>
+        <option value="Xbox">Platform: Xbox</option>
+        <option value="Nintendo Switch">Platform: Nintendo Switch</option>
+        <option value="PlayStation">Platform: PlayStation</option>
+        <option value="PlayStation">Platform: PlayStation</option>
+      </select>
     </div>
     `;
 
